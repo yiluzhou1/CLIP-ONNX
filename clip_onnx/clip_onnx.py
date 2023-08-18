@@ -6,9 +6,11 @@ import onnxruntime
 class clip_onnx(clip_converter):
     def __init__(self, model=None,
                  visual_path: str = "clip_visual.onnx",
-                 textual_path: str = "clip_textual.onnx"):
+                 textual_path: str = "clip_textual.onnx",
+                 openclip: str = ""):
+        #openclip: "" for clip model, "openclip" for openclip model.
         if not isinstance(model, (type(None))):
-            super().__init__(model, visual_path, textual_path)
+            super().__init__(model, visual_path, textual_path, openclip)
         else:
             print("[CLIP ONNX] Load mode")
 

@@ -7,8 +7,11 @@ from .utils import Textual, DEFAULT_EXPORT
 
 class clip_converter(nn.Module):
     def __init__(self, model, visual_path: str = "clip_visual.onnx",
-                 textual_path: str = "clip_textual.onnx"):
+                 textual_path: str = "clip_textual.onnx",
+                 openclip: str = ""):
+        # openclip: "" for clip model, "openclip" for openclip model.
         super().__init__()
+        self.openclip = openclip
         self.model = model
         self.visual_path = visual_path
         self.textual_path = textual_path
@@ -52,7 +55,7 @@ class clip_converter(nn.Module):
 
     def convert_textual(self, dummy_input, wrapper=Textual,
                         export_params=DEFAULT_EXPORT):
-        textual = wrapper(self.model)
+        textual = wrapper(self.model, self.openclip)
         self.torch_export(textual, dummy_input, self.textual_path,
                           export_params=export_params)
         self.onnx_checker(self.textual_path)

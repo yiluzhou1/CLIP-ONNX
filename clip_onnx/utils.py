@@ -4,7 +4,7 @@ from torch import nn
 
 
 class Textual(nn.Module):
-    def __init__(self, model):
+    def __init__(self, model, openclip=""):
         super().__init__()
         self.transformer = model.transformer
         self.positional_embedding = model.positional_embedding
@@ -12,15 +12,21 @@ class Textual(nn.Module):
         self.ln_final = model.ln_final
         self.text_projection = model.text_projection
         self.token_embedding = model.token_embedding
-        self.attn_mask = model.attn_mask
+        self.openclip = openclip
+        if self.openclip != "":
+            self.attn_mask = model.attn_mask
 
     def forward(self, text):
         x = self.token_embedding(text)  # [batch_size, n_ctx, d_model]
 
         x = x + self.positional_embedding
         x = x.permute(1, 0, 2)  # NLD -> LND
-        # x = self.transformer(x)
-        x = self.transformer(x, attn_mask=self.attn_mask)
+        if self.openclip == "":
+            # clip model
+            x = self.transformer(x)
+        else:
+            # openclip model
+            x = self.transformer(x, attn_mask=self.attn_mask)
         x = x.permute(1, 0, 2)  # LND -> NLD
         x = self.ln_final(x)
 

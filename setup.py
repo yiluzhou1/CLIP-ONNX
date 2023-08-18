@@ -7,8 +7,8 @@ with open("requirements.txt", "r") as f:
 
 setup(
     name="clip_onnx",
-    version="1.2",
-    py_modules=["clip_onnx, clip"],
+    version="1.3dev",
+    py_modules=["clip_onnx"], #, clip
     description="",
     author="Maxim Gerasimov",
     packages=find_packages(),
